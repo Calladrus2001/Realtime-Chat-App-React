@@ -21,9 +21,9 @@ class AuthService {
   }
 
   async signIn({ email, password }) {
-    const { user, error } = await this.client.auth.signIn({
-      email,
-      password,
+    const { user, error } = await this.client.auth.signInWithPassword({
+      email: email,
+      password: password
     });
 
     if (error) throw new Error(error.message);

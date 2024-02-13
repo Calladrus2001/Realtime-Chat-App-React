@@ -1,9 +1,72 @@
-import React from 'react'
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import authService from "@/services/authService";
 
 function Auth() {
+  const [userExists, setUserExists] = useState(true);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const navigate = useNavigate();
   return (
-    <div>Auth</div>
-  )
+    <>
+      <div className="h-screen w-full flex items-center justify-center">
+        <Card className="w-1/4 min-w-96">
+          <CardHeader>
+            <CardTitle> {userExists ? "Login" : "Sign Up"} </CardTitle>
+            <CardDescription> {"Let's get started!"} </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Label>Email</Label>
+            <Input type="email" placeholder="Email" ref={emailRef} />
+            <Label>Password</Label>
+            <Input type="password" placeholder="Password" ref={passwordRef} />
+          </CardContent>
+          <CardFooter className="flex-col">
+            <Button
+              className="w-full"
+              onClick={async () => {
+                const email = emailRef.current.value;
+                const password = passwordRef.current.value;
+
+                try {
+                  userExists
+                    ? await authService.signIn({ email, password })
+                    : await authService.signUp({ email, password });
+                  navigate('/home', {replace: true});
+                } catch (error) {
+                  toast.error(`${error.message}`);
+                  console.log(error);
+                }
+              }}
+            >
+              {userExists ? "Login" : "Sign Up"}
+            </Button>
+            <Button
+              variant="link"
+              className="text-sm font-light"
+              onClick={() => setUserExists((prev) => !prev)}
+            >
+              {userExists
+                ? "Don't have an Account? Sign up"
+                : "Already have an Account? Sign In"}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </>
+  );
 }
 
-export default Auth
+export default Auth;

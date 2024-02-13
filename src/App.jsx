@@ -1,8 +1,14 @@
 import React from "react";
-import authService from "./services/authService";
+import { Outlet } from "react-router-dom";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
-  return <div>App</div>;
+  return (
+    <>
+      <Outlet />
+      <Toaster />
+    </>
+  );
 }
 
 export default App;
