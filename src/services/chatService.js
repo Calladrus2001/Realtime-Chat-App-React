@@ -1,11 +1,11 @@
-import { supabaseAnonKey } from "../lib/config";
+// import { supabaseAnonKey } from "../lib/config";
 import { createClient } from "@supabase/supabase-js";
 
 class ChatService {
   constructor() {
     this.client = createClient(
       "https://kywzezpajriiswaklxpi.supabase.co",
-      supabaseAnonKey
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5d3plenBhanJpaXN3YWtseHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc1Nzc4NDIsImV4cCI6MjAyMzE1Mzg0Mn0.49XWBVpGpWgoRBVdH2NqnfTprBNErhVAiabOubexIAQ"
     );
   }
 
@@ -38,14 +38,14 @@ class ChatService {
 
   async fetchChannels(userId) {
     const { data, error } = await this.client
-      .from("channels")
-      .select("channels.*")
-      .innerJoin("channel_participants", {
-        "channels.id": "channel_participants.channel_id",
-      })
-      .eq("channel_participants.user_id", userId);
+      .from("participants")
+      .select("user_id, channels (*)")
+      .eq("user_id", userId);
 
-    if (error) throw Error(error);
+    if (error) {
+      console.log(error);
+      throw Error(error);
+    }
     return data;
   }
 

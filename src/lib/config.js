@@ -1,1 +1,2 @@
-export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseAnonKey = String(import.meta.env.VITE_SUPABASE_ANON_KEY);
+export default supabaseAnonKey;
