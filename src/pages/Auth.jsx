@@ -14,6 +14,7 @@ function Auth() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const nameRef = useRef(null);
   const navigate = useNavigate();
   return (
     <>
@@ -24,6 +25,8 @@ function Auth() {
             <CardDescription> {"Let's get started!"} </CardDescription>
           </CardHeader>
           <CardContent>
+            {!userExists && <Label>Username</Label>}
+            {!userExists && <Input type="text" placeholder="Username" ref={nameRef} />}
             <Label>Email</Label>
             <Input type="email" placeholder="Email" ref={emailRef} />
             <Label>Password</Label>
@@ -36,12 +39,12 @@ function Auth() {
               onClick={async () => {
                 const email = emailRef.current.value;
                 const password = passwordRef.current.value;
-
+                const name = nameRef.current.value;
                 try {
                   setButtonDisabled((prev) => !prev);
                   userExists
                     ? await authService.signIn({ email, password })
-                    : await authService.signUp({ email, password });
+                    : await authService.signUp({ email, password }, name);
                   navigate("/home", { replace: true });
                 } catch (error) {
                   toast.error(`${error.message}`);

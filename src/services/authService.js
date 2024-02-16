@@ -9,13 +9,19 @@ class AuthService {
     );
   }
 
-  async signUp({ email, password }) {
-    const { data, error } = await this.client.auth.signUp({
+  async signUp({ email, password }, name) {
+    const { data, signUpError } = await this.client.auth.signUp({
       email,
       password,
     });
 
-    if (error) throw new Error(error.message);
+    if (signUpError) throw new Error(signUpError.message);
+
+    const { _, updateError } = await this.client.auth.updateUser({
+      data: { display_name: name }
+    });
+
+    if (updateError) throw new Error(updateError.message);
 
     return data;
   }
