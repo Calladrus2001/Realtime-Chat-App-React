@@ -2,20 +2,16 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"; /* prettier-ignore */
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
 import authService from "@/services/authService";
 
 function Auth() {
   const [userExists, setUserExists] = useState(true);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigate = useNavigate();
@@ -36,21 +32,26 @@ function Auth() {
           <CardFooter className="flex-col">
             <Button
               className="w-full"
+              disabled={buttonDisabled}
               onClick={async () => {
                 const email = emailRef.current.value;
                 const password = passwordRef.current.value;
 
                 try {
+                  setButtonDisabled((prev) => !prev);
                   userExists
                     ? await authService.signIn({ email, password })
                     : await authService.signUp({ email, password });
-                  navigate('/home', {replace: true});
+                  navigate("/home", { replace: true });
                 } catch (error) {
                   toast.error(`${error.message}`);
                   console.log(error);
                 }
               }}
             >
+              {buttonDisabled && (
+                <AiOutlineLoading3Quarters className="mr-2 animate-spin" />
+              )}
               {userExists ? "Login" : "Sign Up"}
             </Button>
             <Button
