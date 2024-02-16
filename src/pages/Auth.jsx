@@ -46,6 +46,7 @@ function Auth() {
                     ? await authService.signIn({ email, password })
                     : await authService.signUp({ email, password }, name);
                   navigate("/home", { replace: true });
+                  setButtonDisabled((prev) => !prev);
                 } catch (error) {
                   toast.error(`${error.message}`);
                   console.log(error);

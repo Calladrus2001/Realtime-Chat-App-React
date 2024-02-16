@@ -1,11 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; /* prettier-ignore */
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"; /* prettier-ignore */
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"; /* prettier-ignore */
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { HiMiniPencilSquare, HiMiniPlus, HiMiniUsers } from "react-icons/hi2";
+
+import authService from "../services/authService";
+import contactService from "../services/contactService";
 
 function ChatsHeader() {
   const emailRef = useRef(null);
@@ -13,12 +17,18 @@ function ChatsHeader() {
   const className =
     "p-1.5 flex justify-center items-center bg-gray-900 text-white font-medium rounded-md";
 
-  const handleSubmit = () => {
-    // try {
-    // } catch (error) {
-    //   toast.error(error.message);
-    //   console.log(error);
-    // }
+  const handleNewContact = async () => {
+    try {
+      const email = emailRef.current.value;
+      const nickname = nameRef.current.value;
+      const user = await authService.getCurrentUser();
+      const userId = user.user.id;
+      await contactService.addContact({ userId, email, nickname });
+      toast.info("Contact added successfully");
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
   };
 
   return (
@@ -63,12 +73,22 @@ function ChatsHeader() {
                 </div>
               </div>
               <DialogFooter>
-                <button
-                  className="p-1.5 font-semibold rounded-md bg-lime-500"
-                  onClick={handleSubmit}
-                >
-                  Add Contact
-                </button>
+                <DialogClose>
+                  <button className="mr-1 py-1.5 px-4 text-sm text-black font-semibold rounded-md bg-gray-100">
+                    Cancel
+                  </button>
+                </DialogClose>
+
+                <DialogClose>
+                  <button
+                    className="p-1.5 text-sm font-semibold rounded-md bg-lime-500"
+                    onClick={() => {
+                      handleNewContact();
+                    }}
+                  >
+                    Add Contact
+                  </button>
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
