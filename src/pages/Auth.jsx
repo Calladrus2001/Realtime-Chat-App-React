@@ -2,14 +2,12 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"; /* prettier-ignore */
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-import authService from "@/services/authService";
-
-function Auth() {
+function Auth({authService}) {
   const [userExists, setUserExists] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const emailRef = useRef(null);

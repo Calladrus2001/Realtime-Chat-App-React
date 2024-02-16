@@ -4,19 +4,18 @@ import { useLoaderData } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { getInit } from "../utils/getInitialsFromName";
-import authService from "../services/authService";
 import chatService from "../services/chatService";
 import Sidebar from "../components/Sidebar";
 import ChatsHeader from "../components/ChatsHeader";
 
-function Home() {
+function Home({ authService }) {
   const channels = useLoaderData();
   return (
     <>
       <div className="h-screen w-full min-w-lg flex items-center justify-start">
         <Sidebar />
         <div className="h-full w-1/4 p-4 bg-gray-800 border-r border-black">
-          <ChatsHeader />
+          <ChatsHeader authService={authService} />
           <ul>
             {channels.map((channel) => (
               <li key={channel.channels.id} className="mb-2">
@@ -45,7 +44,7 @@ function Home() {
 
 const handleChannelChange = (channelId) => {};
 
-export const channelLoader = async () => {
+export const channelLoader = async (authService) => {
   const user = await authService.getCurrentUser();
   const channels = await chatService.fetchChannels(user.user.id);
   return channels;

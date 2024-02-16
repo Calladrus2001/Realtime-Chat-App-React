@@ -8,10 +8,9 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { HiMiniPencilSquare, HiMiniPlus, HiMiniUsers } from "react-icons/hi2";
 
-import authService from "../services/authService";
 import contactService from "../services/contactService";
 
-function ChatsHeader() {
+function ChatsHeader({authService}) {
   const emailRef = useRef(null);
   const nameRef = useRef(null);
   const className =

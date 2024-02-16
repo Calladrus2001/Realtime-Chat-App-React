@@ -5,6 +5,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import Auth from "./pages/Auth.jsx";
 import Home, { channelLoader } from "./pages/Home.jsx";
+import authService from "./services/authService";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -12,8 +13,8 @@ const router = createBrowserRouter([
     path: "/",
     element: <App></App>,
     children: [
-      { path: "/", element: <Auth></Auth> },
-      { path: "/home", element: <Home></Home>, loader: channelLoader },
+      { path: "/", element: <Auth authService={authService} /> },
+      { path: "/home", element: <Home authService={ authService }/>, loader: () => channelLoader(authService) } /* prettier-ignore */,
     ],
   },
 ]);
