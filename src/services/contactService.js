@@ -8,11 +8,12 @@ class ContactService {
     );
   }
 
-  async fetchAllContacts({ userId }) {
+  async getAllContacts({ userId }) {
     const { data, error } = await this.client
       .from("contacts")
-      .select("user_id, contact_name")
-      .eq("user_id", userId);
+      .select("contact_email, contact_name, contact_id")
+      .eq("user_id", userId)
+      .neq("contact_id", null);
 
     if (error) throw Error(error);
     return data;

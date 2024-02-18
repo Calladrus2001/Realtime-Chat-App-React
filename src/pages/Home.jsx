@@ -15,7 +15,7 @@ function Home({ authService }) {
       <div className="h-screen w-full min-w-lg flex items-center justify-start">
         <Sidebar />
         <div className="h-full w-1/4 p-4 bg-gray-800 border-r border-black">
-          <ChatsHeader authService={authService} />
+          <ChatsHeader authService={authService} chatService={ chatService } />
           <ul>
             {channels.map((channel) => (
               <li key={channel.channels.id} className="mb-2">

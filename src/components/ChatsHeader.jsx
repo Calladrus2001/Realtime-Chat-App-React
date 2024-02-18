@@ -1,20 +1,37 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; /* prettier-ignore */
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"; /* prettier-ignore */
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { HiMiniPencilSquare, HiMiniPlus, HiMiniUsers } from "react-icons/hi2";
-
 import contactService from "../services/contactService";
 
-function ChatsHeader({authService}) {
+function ChatsHeader({ authService, chatService }) {
+  const [contacts, setContacts] = useState([]);
   const emailRef = useRef(null);
   const nameRef = useRef(null);
   const className =
-    "p-1.5 flex justify-center items-center bg-gray-900 text-white font-medium rounded-md";
+    "p-1.5 flex justify-start items-center bg-gray-900 text-white font-medium rounded-md";
+
+  useEffect(() => {
+    const getContacts = async () => {
+      const user = await authService.getCurrentUser();
+      const userId = user.user.id;
+      const contacts = await contactService.getAllContacts({ userId });
+      setContacts(contacts);
+    };
+    getContacts();
+  }, []);
 
   const handleNewContact = async () => {
     try {
@@ -30,6 +47,8 @@ function ChatsHeader({authService}) {
     }
   };
 
+  const handleNewGroup = async () => {};
+
   return (
     <div className="flex justify-between items-center text-white text-xl mb-4">
       <strong>Chats</strong>
@@ -40,7 +59,7 @@ function ChatsHeader({authService}) {
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="w-44 bg-gray-700 border-0 flex flex-col gap-2"
+          className="w-48 bg-gray-700 border-0 flex flex-col gap-2"
           side="bottom"
           align="start"
           alignOffset={15}
@@ -73,29 +92,57 @@ function ChatsHeader({authService}) {
               </div>
               <DialogFooter>
                 <DialogClose>
-                  <button className="mr-1 py-1.5 px-4 text-sm text-black font-semibold rounded-md bg-gray-100">
+                  <div className="mr-1 py-1.5 px-4 text-sm text-black font-semibold rounded-md bg-gray-100">
                     Cancel
-                  </button>
+                  </div>
                 </DialogClose>
 
                 <DialogClose>
-                  <button
+                  <div
                     className="p-1.5 text-sm font-semibold rounded-md bg-lime-500"
-                    onClick={() => {
-                      handleNewContact();
+                    onClick={async () => {
+                      await handleNewContact();
                     }}
                   >
                     Add Contact
-                  </button>
+                  </div>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
-          <div className={className}>
-            <HiMiniUsers className="mr-4 text-lg" />
-            <p>New Group</p>
-          </div>
+          <Dialog>
+            <DialogTrigger>
+              <div className={className}>
+                <HiMiniUsers className="mr-4 text-lg" />
+                <p>New Group</p>
+              </div>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] bg-gray-800 text-white border-0">
+              <DialogHeader>
+                <DialogTitle>Add New Group</DialogTitle>
+              </DialogHeader>
+              {/* insert checkboxes here */}
+              <DialogFooter>
+                <DialogClose>
+                  <div className="mr-1 py-1.5 px-4 text-sm text-black font-semibold rounded-md bg-gray-100">
+                    Cancel
+                  </div>
+                </DialogClose>
+
+                <DialogClose>
+                  <div
+                    className="p-1.5 text-sm font-semibold rounded-md bg-lime-500"
+                    onClick={async () => {
+                      await handleNewGroup();
+                    }}
+                  >
+                    Add Group
+                  </div>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </PopoverContent>
       </Popover>
     </div>
