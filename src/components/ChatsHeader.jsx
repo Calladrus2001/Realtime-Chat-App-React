@@ -14,10 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { HiMiniPencilSquare, HiMiniPlus, HiMiniUsers } from "react-icons/hi2";
+import CheckboxList from "./CheckboxList";
 import contactService from "../services/contactService";
 
 function ChatsHeader({ authService, chatService }) {
   const [contacts, setContacts] = useState([]);
+  const [selectedContact, setselectedContact] = useState([])
   const emailRef = useRef(null);
   const nameRef = useRef(null);
   const className =
@@ -122,7 +124,7 @@ function ChatsHeader({ authService, chatService }) {
               <DialogHeader>
                 <DialogTitle>Add New Group</DialogTitle>
               </DialogHeader>
-              {/* insert checkboxes here */}
+                <CheckboxList contacts={contacts} setSelectedContacts={setselectedContact}/>
               <DialogFooter>
                 <DialogClose>
                   <div className="mr-1 py-1.5 px-4 text-sm text-black font-semibold rounded-md bg-gray-100">

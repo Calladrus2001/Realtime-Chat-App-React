@@ -11,7 +11,7 @@ class ContactService {
   async getAllContacts({ userId }) {
     const { data, error } = await this.client
       .from("contacts")
-      .select("contact_email, contact_name, contact_id")
+      .select("id, contact_email, contact_name, contact_id")
       .eq("user_id", userId)
       .neq("contact_id", null);
 

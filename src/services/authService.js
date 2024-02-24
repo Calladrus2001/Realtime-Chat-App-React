@@ -22,19 +22,20 @@ class AuthService {
     });
 
     if (updateError) throw new Error(updateError.message);
+    this._updateContacts({ email, userId: data.user.id });
 
     return data;
   }
 
   async signIn({ email, password }) {
-    const { user, error } = await this.client.auth.signInWithPassword({
+    const { data, error } = await this.client.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
     if (error) throw new Error(error.message);
-
-    return user;
+    this._updateContacts({ email, userId: data.user.id });
+    return data;
   }
 
   async signOut() {
@@ -47,6 +48,16 @@ class AuthService {
     if (error) throw new Error(error.message);
 
     return data;
+  }
+
+  async _updateContacts({ email, userId }) {
+    const { _, error } = await this.client
+      .from("contacts")
+      .update({ contact_id: String(userId) })
+      .eq("contact_email", email)
+      .is("contact_id", null);
+
+    if (error) throw Error(error);
   }
 }
 
