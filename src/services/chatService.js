@@ -9,23 +9,35 @@ class ChatService {
     );
   }
 
-  async createChannel(slug, createdBy) {
-    //? Adding the channel and the user as a participant to that channel
-
+  async createChannel({ slug, createdBy, type, participants }) {
     const { data: channelData, error: channelError } = await this.client
       .from("channels")
-      .insert([{ slug, created_by: createdBy }]);
+      .insert([{ slug, created_by: createdBy, type }])
+      .select();
 
     if (channelError) throw Error(channelError);
     const channelId = channelData[0].id;
+    participants.push(createdBy);
 
-    const { error: participantError } = await this.client
-      .from("channel_participants")
-      .insert([{ channel_id: channelId, user_id: createdBy }]);
-
-    if (participantError) throw Error(participantError);
+    for (const participant of participants) {
+      await this._addChannelParticipant({
+        channel_id: channelId,
+        user_id: participant,
+      });
+    }
 
     return channelData;
+  }
+
+  async _addChannelParticipant({ channel_id, user_id }) {
+    const { error } = await this.client
+      .from("participants")
+      .insert([{ channel_id, user_id }]);
+
+    if (error) {
+      console.log(error);
+      throw Error(error);
+    }
   }
 
   async createMesssage({ message, userId, channelId }) {
@@ -42,10 +54,7 @@ class ChatService {
       .select("user_id, channels (*)")
       .eq("user_id", userId);
 
-    if (error) {
-      console.log(error);
-      throw Error(error);
-    }
+    if (error) throw Error(error);
     return data;
   }
 

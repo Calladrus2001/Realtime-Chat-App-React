@@ -19,9 +19,10 @@ import contactService from "../services/contactService";
 
 function ChatsHeader({ authService, chatService }) {
   const [contacts, setContacts] = useState([]);
-  const [selectedContact, setselectedContact] = useState([])
+  const [selectedContacts, setselectedContacts] = useState([]);
   const emailRef = useRef(null);
   const nameRef = useRef(null);
+  const groupNameRef = useRef(null);
   const className =
     "p-1.5 flex justify-start items-center bg-gray-900 text-white font-medium rounded-md";
 
@@ -49,7 +50,24 @@ function ChatsHeader({ authService, chatService }) {
     }
   };
 
-  const handleNewGroup = async () => {};
+  const handleNewGroup = async () => {
+    try {
+      const type = "group";
+      const slug = groupNameRef.current.value;
+      const user = await authService.getCurrentUser();
+      const userId = user.user.id;
+      const channel = await chatService.createChannel({
+        slug,
+        createdBy: userId,
+        type,
+        participants: selectedContacts,
+      });
+      toast.info("Group created Successfully");
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center text-white text-xl mb-4">
@@ -84,12 +102,7 @@ function ChatsHeader({ authService, chatService }) {
                 </div>
                 <div className="grid grid-cols-1 items-center gap-4">
                   <Label htmlFor="nickname">Nickname</Label>
-                  <Input
-                    id="nickname"
-                    name="nickname"
-                    type="text"
-                    ref={nameRef}
-                  />
+                  <Input id="nickname" name="nickname" type="text" ref={nameRef} />
                 </div>
               </div>
               <DialogFooter>
@@ -124,7 +137,11 @@ function ChatsHeader({ authService, chatService }) {
               <DialogHeader>
                 <DialogTitle>Add New Group</DialogTitle>
               </DialogHeader>
-                <CheckboxList contacts={contacts} setSelectedContacts={setselectedContact}/>
+              <Input name="Group Name" placeholder="Group Name" ref={groupNameRef} />
+              <CheckboxList
+                contacts={contacts}
+                setselectedContacts={setselectedContacts}
+              />
               <DialogFooter>
                 <DialogClose>
                   <div className="mr-1 py-1.5 px-4 text-sm text-black font-semibold rounded-md bg-gray-100">

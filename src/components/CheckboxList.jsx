@@ -1,8 +1,8 @@
 import React from "react";
 import { Checkbox } from "./ui/checkbox";
-function CheckboxList({ contacts, setselectedContact }) {
+function CheckboxList({ contacts, setselectedContacts }) {
   const onCheckboxChange = (contactId) => {
-    setselectedContact((prevSelectedContacts) => {
+    setselectedContacts((prevSelectedContacts) => {
       // Check if the contactId is already in the selectedContacts array
       const contactIndex = prevSelectedContacts.indexOf(contactId);
       if (contactIndex === -1) {
@@ -18,8 +18,8 @@ function CheckboxList({ contacts, setselectedContact }) {
   return (
     <ul>
       {contacts.map((contact) => (
-        <li key={contact.id}>
-          <Checkbox onChange={() => onCheckboxChange(contact.id)} />
+        <li key={contact.contact_id}>
+          <Checkbox onClick={() => onCheckboxChange(contact.contact_id)} />
           {contact.contact_email}
         </li>
       ))}
