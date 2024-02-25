@@ -55,9 +55,13 @@ class ChatService {
       .channel(channelId)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `channel_id=eq.${channelId}` },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `channel_id=eq.${channelId}`,
+        },
         (payload) => {
-          console.log(payload);
           const newMessage = payload.new;
           setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
@@ -69,15 +73,20 @@ class ChatService {
     this.client.removeAllChannels();
   }
 
-  async createMesssage({ message, userId, channelId }) {
-    const { error } = await this.client
+  async createMessage({ message, userId, channelId }) {
+    const { data, error } = await this.client
       .from("messages")
-      .insert([{ message: message, user_id: userId, channel_id: channelId }]);
+      .insert([{ message: message, user_id: userId, channel_id: channelId }])
+      .select();
 
-    if (error) throw Error(error);
+    if (error) {
+      console.log(error);
+      throw Error(error);
+    }
+    return data;
   }
 
-  async fetchMessages(channelId) {
+  async fetchMessages({ channelId }) {
     const { data, error } = await this.client
       .from("messages")
       .select("*")
