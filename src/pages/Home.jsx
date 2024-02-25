@@ -15,8 +15,8 @@ function Home({ authService }) {
   return (
     <>
       <div className="h-screen w-full min-w-lg flex items-center justify-start">
-        <Sidebar />
-        <div className="h-full w-1/4 p-4 bg-gray-800 border-r border-0.5 border-black">
+        <Sidebar authService={authService} />
+        <div className="h-full w-1/4 p-4 bg-gray-800 border-l border-r border-0.5 border-black">
           <ChatsHeader authService={authService} chatService={chatService} />
           <ul>
             {channels.map((channel) => (

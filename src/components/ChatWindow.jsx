@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
-import { Input } from "./ui/input";
+import React, { useEffect, useRef } from "react";
+import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
+import { IoSend, IoHappyOutline, IoImageOutline } from "react-icons/io5";
 
 function ChatWindow({ currentChannel, chatService }) {
+  const msgRef = useRef(null);
   useEffect(() => {
     return () => {};
   }, [currentChannel]);
@@ -19,16 +22,29 @@ function ChatWindow({ currentChannel, chatService }) {
         <></>
       ) : (
         <>
-          <div className="w-full p-4 bg-gray-800 shadow-md text-white">
+          <div className="w-full p-4 bg-gray-800 shadow-md font-semibold text-white text-center">
             {currentChannel.slug}
           </div>
           <div className="w-full px-4 py-3 absolute flex items-center bottom-0 bg-gray-800 text-white">
-            <input
-              type="text"
-              placeholder="Type Something..."
-              className="w-full border-none bg-gray-800 outline-none focus:outline-none"
-            />
-            <div className="ml-2">Send</div>
+            <Button variant="ghost">
+              <IoHappyOutline className="text-lg" />
+            </Button>
+            <Button variant="ghost">
+              <IoImageOutline className="text-lg" />
+            </Button>
+            <ScrollArea className="w-full">
+              <textarea
+                type="text"
+                placeholder="Type Something..."
+                className="w-full h-auto ml-4 border-none bg-gray-800 outline-none focus:outline-none resize-none overflow-y-auto"
+                maxLength={255}
+                rows="1"
+              />
+            </ScrollArea>
+
+            <Button variant="ghost">
+              <IoSend />
+            </Button>
           </div>
         </>
       )}
