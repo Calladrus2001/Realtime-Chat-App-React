@@ -9,6 +9,16 @@ class ChatService {
     );
   }
 
+  async fetchChannels(userId) {
+    const { data, error } = await this.client
+      .from("participants")
+      .select("user_id, channels (*)")
+      .eq("user_id", userId);
+
+    if (error) throw Error(error);
+    return data;
+  }
+
   async createChannel({ slug, createdBy, type, participants }) {
     const { data: channelData, error: channelError } = await this.client
       .from("channels")
@@ -40,22 +50,31 @@ class ChatService {
     }
   }
 
+  subscribeToChannel({ channelId, setMessages }) {
+    this.client
+      .channel(channelId)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages", filter: `channel_id=eq.${channelId}` },
+        (payload) => {
+          console.log(payload);
+          const newMessage = payload.new;
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
+      )
+      .subscribe();
+  }
+
+  unsubscribeFromAll() {
+    this.client.removeAllChannels();
+  }
+
   async createMesssage({ message, userId, channelId }) {
     const { error } = await this.client
       .from("messages")
       .insert([{ message: message, user_id: userId, channel_id: channelId }]);
 
     if (error) throw Error(error);
-  }
-
-  async fetchChannels(userId) {
-    const { data, error } = await this.client
-      .from("participants")
-      .select("user_id, channels (*)")
-      .eq("user_id", userId);
-
-    if (error) throw Error(error);
-    return data;
   }
 
   async fetchMessages(channelId) {

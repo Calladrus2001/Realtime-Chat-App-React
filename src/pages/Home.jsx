@@ -39,7 +39,7 @@ function Home({ authService }) {
           </ul>
         </div>
         <div className="h-full w-3/4 bg-gray-800 relative">
-          <ChatWindow currentChannel={currentChannel} chatService={chatService} />
+          <ChatWindow currentChannel={currentChannel} authService={authService} chatService={chatService} />
         </div>
       </div>
     </>

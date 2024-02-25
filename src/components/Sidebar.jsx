@@ -24,24 +24,13 @@ function Sidebar({ authService }) {
 
   return (
     <div
-      className="h-full px-2 py-4 flex flex-col justify-between items-center"
+      className="h-full px-2 py-4 flex flex-col justify-end items-center"
       style={{
         backgroundImage: `url('/src/assets/chat_bg.png')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <NavLink
-        to="/home"
-        className={({ isActive }) =>
-          isActive && "border-l-2 border-lime-500 bg-gray-700 rounded-r-md"
-        }
-      >
-        <div className="py-1 px-3">
-          <IoChatbubbleEllipsesOutline className="text-white text-2xl" />
-        </div>
-      </NavLink>
-
       <div className="flex flex-col items-center gap-6">
         <Popover>
           <PopoverTrigger>
