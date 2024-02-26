@@ -15,7 +15,7 @@ class ChatService {
       .select("user_id, channels (*)")
       .eq("user_id", userId);
 
-    if (error) throw Error(error);
+    if (error) throw new Error(error);
     return data;
   }
 
@@ -25,7 +25,7 @@ class ChatService {
       .insert([{ slug, created_by: createdBy, type }])
       .select();
 
-    if (channelError) throw Error(channelError);
+    if (channelError) throw new Error(channelError);
     const channelId = channelData[0].id;
     participants.push(createdBy);
 
@@ -44,10 +44,7 @@ class ChatService {
       .from("participants")
       .insert([{ channel_id, user_id }]);
 
-    if (error) {
-      console.log(error);
-      throw Error(error);
-    }
+    if (error) throw new Error(error);
   }
 
   subscribeToChannel({ channelId, setMessages }) {
@@ -79,10 +76,7 @@ class ChatService {
       .insert([{ message: message, user_id: userId, channel_id: channelId }])
       .select();
 
-    if (error) {
-      console.log(error);
-      throw Error(error);
-    }
+    if (error) throw new Error(error);
     return data;
   }
 
@@ -93,7 +87,7 @@ class ChatService {
       .eq("channel_id", channelId)
       .order("inserted_at", { ascending: true });
 
-    if (error) throw Error(error);
+    if (error) throw new Error(error);
     return data;
   }
 }

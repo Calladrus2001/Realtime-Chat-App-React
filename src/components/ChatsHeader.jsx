@@ -56,7 +56,7 @@ function ChatsHeader({ authService, chatService }) {
       const slug = groupNameRef.current.value;
       const user = await authService.getCurrentUser();
       const userId = user.user.id;
-      const channel = await chatService.createChannel({
+      await chatService.createChannel({
         slug,
         createdBy: userId,
         type,

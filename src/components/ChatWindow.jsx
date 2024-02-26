@@ -51,6 +51,11 @@ function ChatWindow({ currentChannel, authService, chatService }) {
           <ScrollArea>
             <ul className="w-full p-2 text-white">
               {messages.map((message) => {
+                //? While adding a message, an unexpected [message] instead of object is also generated which
+                //? does NOT have an id field so the following line is to prevent this from being rendered.
+                //? Previously, a chatbubble with blank userid and message was being rendered along with the new message
+
+                if (Array.isArray(message)) return null;
                 return (
                   <li key={message.id} className="mb-1">
                     <ChatBubble user={currentUser.user} message={message} />
@@ -90,7 +95,7 @@ function ChatWindow({ currentChannel, authService, chatService }) {
                       channelId: currentChannel.id,
                     });
                     setMessages((prev) => [...prev, newMessage]);
-                    msgRef.current.value = null;
+                    msgRef.current.value = "";
                   } catch (error) {
                     console.log(error);
                     toast.error(error.message);

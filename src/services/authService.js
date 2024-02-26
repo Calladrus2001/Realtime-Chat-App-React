@@ -51,7 +51,7 @@ class AuthService {
   }
 
   async _updateContacts({ email, userId }) {
-    const { _, error } = await this.client
+    const { error } = await this.client
       .from("contacts")
       .update({ contact_id: String(userId) })
       .eq("contact_email", email)

@@ -2,7 +2,7 @@ import React from "react";
 
 function ChatBubble({ user, message }) {
   const isCurrentUser = message.user_id === user.id;
-
+  console.log(message);
   return (
     <div className={`flex justify-${isCurrentUser ? "end" : "start"}`}>
       <div

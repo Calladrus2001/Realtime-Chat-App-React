@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-
-import authService from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; /* prettier-ignore */
-import { IoChatbubbleEllipsesOutline, IoSettingsOutline } from "react-icons/io5"; /* prettier-ignore */
+import { IoSettingsOutline } from "react-icons/io5"; /* prettier-ignore */
 import { getInit } from "../utils/getInitialsFromName";
 
 function Sidebar({ authService }) {
@@ -38,7 +36,11 @@ function Sidebar({ authService }) {
               <IoSettingsOutline className="text-white text-2xl" />
             </div>
           </PopoverTrigger>
-          <PopoverContent className="w-44 bg-gray-700 border-0" side="right">
+          <PopoverContent
+            className="w-44 bg-gray-700 border-0"
+            side="right"
+            sideOffset="1"
+          >
             <Button
               variant="destructive"
               className="w-full"
