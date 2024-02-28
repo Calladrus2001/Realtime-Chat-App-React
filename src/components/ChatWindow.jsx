@@ -45,20 +45,18 @@ function ChatWindow({ currentChannel, authService, chatService }) {
         <>
           <div className="w-full p-4 flex justify-center items-center bg-gray-800 shadow-md font-semibold text-white">
             <p>{currentChannel.slug}</p>
-            <div className="ml-4 mr-2 animate-ping size-1.5 rounded-full bg-lime-500 opacity-75"></div>
-            <p className="text-gray-600 text-sm">x people online</p>
           </div>
           <ScrollArea>
             <ul className="w-full p-2 text-white">
-              {messages.map((message) => {
-                //? While adding a message, an unexpected [message] instead of object is also generated which
-                //? does NOT have an id field so the following line is to prevent this from being rendered.
-                //? Previously, a chatbubble with blank userid and message was being rendered along with the new message
-
-                if (Array.isArray(message)) return null;
+                {messages.map((message, index) => {
+                const previousMessage = index > 0 ? messages[index - 1] : null;
                 return (
                   <li key={message.id} className="mb-1">
-                    <ChatBubble user={currentUser.user} message={message} />
+                    <ChatBubble
+                      user={currentUser.user}
+                      message={message}
+                      previousMessage={previousMessage}
+                    />
                   </li>
                 );
               })}
@@ -89,12 +87,11 @@ function ChatWindow({ currentChannel, authService, chatService }) {
                 if (!msgRef.current.value) toast.warning("Message cannot be empty");
                 else {
                   try {
-                    const newMessage = await chatService.createMessage({
+                    await chatService.createMessage({
                       message: msgRef.current.value,
                       userId: currentUser.user.id,
                       channelId: currentChannel.id,
                     });
-                    setMessages((prev) => [...prev, newMessage]);
                     msgRef.current.value = "";
                   } catch (error) {
                     console.log(error);
