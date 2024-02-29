@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, redirect } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"; /* prettier-ignore */
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-function Auth({authService}) {
+function Auth({ authService }) {
   const [userExists, setUserExists] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const emailRef = useRef(null);
@@ -73,3 +73,13 @@ function Auth({authService}) {
 }
 
 export default Auth;
+
+export const authLoader = async (authService) => {
+  try {
+    const user = await authService.getCurrentUser();
+    if (user) return redirect("/home");
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

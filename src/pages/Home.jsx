@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { redirect, useLoaderData } from "react-router-dom";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -47,9 +47,15 @@ function Home({ authService }) {
 }
 
 export const channelLoader = async (authService) => {
-  const user = await authService.getCurrentUser();
-  const channels = await chatService.fetchChannels(user.user.id);
-  return channels;
+  try {
+    const user = await authService.getCurrentUser();
+    const channels = await chatService.fetchChannels(user.user.id);
+    return channels;
+  } catch (error) { 
+    console.log(error);
+    return redirect("/");
+  }
+  
 };
 
 export default Home;
