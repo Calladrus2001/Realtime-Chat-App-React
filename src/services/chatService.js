@@ -1,5 +1,6 @@
 // import { supabaseAnonKey } from "../lib/config";
 import { createClient } from "@supabase/supabase-js";
+import localStorageService from "./localStorageService";
 
 class ChatService {
   constructor() {
@@ -10,12 +11,20 @@ class ChatService {
   }
 
   async fetchChannels(userId) {
+    const cacheData = localStorageService.fetchData({
+      key: "channels",
+      expiresIn: 7 * 24 * 60 * 60 * 1000,
+    });
+    if (cacheData) return cacheData;
+
     const { data, error } = await this.client
       .from("participants")
       .select("user_id, channels (*)")
       .eq("user_id", userId);
 
     if (error) throw new Error(error);
+
+    localStorageService.setData({ key: "channels", data});
     return data;
   }
 
@@ -36,6 +45,7 @@ class ChatService {
       });
     }
 
+    localStorageService.removeData("channels");
     return channelData;
   }
 

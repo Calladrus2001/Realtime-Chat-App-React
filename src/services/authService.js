@@ -1,5 +1,6 @@
 // import supabaseAnonKey from "../lib/config";
 import { createClient } from "@supabase/supabase-js";
+import localStorageService from "./localStorageService";
 
 class AuthService {
   constructor() {
@@ -41,12 +42,19 @@ class AuthService {
   async signOut() {
     const { error } = await this.client.auth.signOut({ scope: "local" });
     if (error) throw new Error(error.message);
+    localStorageService.removeData("user")
+    localStorageService.removeData("channels");
+    localStorageService.removeData("contacts");
   }
 
   async getCurrentUser() {
+    const cacheData = localStorageService.fetchData({ key: "user" });
+    if (cacheData) return cacheData;
+
     const { data, error } = await this.client.auth.getUser();
     if (error) throw new Error(error.message);
 
+    localStorageService.setData({key: "user", data})
     return data;
   }
 
