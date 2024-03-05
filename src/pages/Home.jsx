@@ -5,9 +5,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { getInit } from "../utils/getInitialsFromName";
 import chatService from "../services/chatService";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/Sidebar/Sidebar";
 import ChatsHeader from "../components/ChatsHeader";
-import ChatWindow from "../components/ChatWindow";
+import ChatWindow from "../components/ChatWindow/ChatWindow";
 
 function Home({ authService }) {
   const [currentChannel, setCurrentChannel] = useState(null);
@@ -39,7 +39,11 @@ function Home({ authService }) {
           </ul>
         </div>
         <div className="h-full w-3/4 bg-gray-800 relative">
-          <ChatWindow currentChannel={currentChannel} authService={authService} chatService={chatService} />
+          <ChatWindow
+            currentChannel={currentChannel}
+            authService={authService}
+            chatService={chatService}
+          />
         </div>
       </div>
     </>
@@ -51,11 +55,9 @@ export const channelLoader = async (authService) => {
     const user = await authService.getCurrentUser();
     const channels = await chatService.fetchChannels(user.user.id);
     return channels;
-  } catch (error) { 
-    console.log(error);
+  } catch (error) {
     return redirect("/");
   }
-  
 };
 
 export default Home;

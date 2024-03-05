@@ -3,22 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; /* prettier-ignore */
 import { IoSettingsOutline } from "react-icons/io5"; /* prettier-ignore */
-import { getInit } from "../utils/getInitialsFromName";
+
+import ProfilePopover from "./ProfilePopover";
 
 function Sidebar({ authService }) {
   const navigate = useNavigate();
-  const [initials, setInitials] = useState("");
-
-  useEffect(() => {
-    const getInitials = async () => {
-      const user = await authService.getCurrentUser();
-      setInitials(getInit(user.user.user_metadata.display_name));
-    };
-    getInitials();
-  }, []);
 
   return (
     <div
@@ -44,9 +35,9 @@ function Sidebar({ authService }) {
             <Button
               variant="destructive"
               className="w-full"
-              onClick={() => {
+              onClick={async () => {
                 try {
-                  authService.signOut();
+                  await authService.signOut();
                   navigate("/", { replace: true });
                 } catch (error) {
                   toast.error(error.message);
@@ -59,9 +50,7 @@ function Sidebar({ authService }) {
           </PopoverContent>
         </Popover>
 
-        <Avatar>
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
+        <ProfilePopover authService={authService}/>
       </div>
     </div>
   );

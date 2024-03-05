@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "./ui/button";
-import { ScrollArea } from "./ui/scroll-area";
+import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
 import ChatBubble from "./ChatBubble";
 import { IoSend, IoHappyOutline, IoImageOutline } from "react-icons/io5";
 import { toast } from "sonner";
@@ -48,7 +48,7 @@ function ChatWindow({ currentChannel, authService, chatService }) {
           </div>
           <ScrollArea>
             <ul className="w-full p-2 text-white">
-                {messages.map((message, index) => {
+              {messages.map((message, index) => {
                 const previousMessage = index > 0 ? messages[index - 1] : null;
                 return (
                   <li key={message.id} className="mb-1">
@@ -84,8 +84,7 @@ function ChatWindow({ currentChannel, authService, chatService }) {
             <Button
               variant="ghost"
               onClick={async () => {
-                if (!msgRef.current.value) toast.warning("Message cannot be empty");
-                else {
+                if (msgRef.current.value) {
                   try {
                     await chatService.createMessage({
                       message: msgRef.current.value,

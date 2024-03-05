@@ -79,7 +79,7 @@ export const authLoader = async (authService) => {
     const user = await authService.getCurrentUser();
     if (user) return redirect("/home");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return null;
   }
 };
