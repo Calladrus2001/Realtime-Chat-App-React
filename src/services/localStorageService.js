@@ -29,8 +29,8 @@ class LocalStorageService {
     localStorage.setItem(this.prefix + key, JSON.stringify(cachedData));
   }
 
-  removeData({ key }) {
-    localStorage.removeItem(key);
+  removeData(key) {
+    localStorage.removeItem(this.prefix + key);
   }
 }
 
