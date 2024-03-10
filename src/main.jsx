@@ -13,8 +13,8 @@ const router = createBrowserRouter([
     path: "/",
     element: <App></App>,
     children: [
-      { path: "/", element: <Auth authService={authService} />, loader: () => authLoader(authService)},
-      { path: "/home", element: <Home authService={ authService }/>, loader: () => channelLoader(authService) } /* prettier-ignore */,
+      { path: "/", element: <Auth/>, loader: () => authLoader(authService)},
+      { path: "/home", element: <Home/>, loader: () => channelLoader(authService) } /* prettier-ignore */,
     ],
   },
 ]);

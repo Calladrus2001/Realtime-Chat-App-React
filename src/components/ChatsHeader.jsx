@@ -1,5 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 
+import authService from "@/services/authService";
+import chatService from "@/services/chatService";
+import contactService from "../services/contactService";
+
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; /* prettier-ignore */
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,9 +19,8 @@ import {
 import { toast } from "sonner";
 import { HiMiniPencilSquare, HiMiniPlus, HiMiniUsers } from "react-icons/hi2";
 import CheckboxList from "./CheckboxList";
-import contactService from "../services/contactService";
 
-function ChatsHeader({ authService, chatService }) {
+function ChatsHeader() {
   const [contacts, setContacts] = useState([]);
   const [selectedContacts, setselectedContacts] = useState([]);
   const emailRef = useRef(null);

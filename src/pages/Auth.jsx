@@ -7,7 +7,9 @@ import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"; /* prettier-ignore */
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-function Auth({ authService }) {
+import authService from "@/services/authService";
+
+function Auth() {
   const [userExists, setUserExists] = useState(true);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const emailRef = useRef(null);

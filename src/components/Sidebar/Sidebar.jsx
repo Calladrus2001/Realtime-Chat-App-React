@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import authService from "@/services/authService";
+
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; /* prettier-ignore */
@@ -8,7 +10,7 @@ import { IoSettingsOutline } from "react-icons/io5"; /* prettier-ignore */
 
 import ProfilePopover from "./ProfilePopover";
 
-function Sidebar({ authService }) {
+function Sidebar() {
   const navigate = useNavigate();
 
   return (
@@ -50,7 +52,7 @@ function Sidebar({ authService }) {
           </PopoverContent>
         </Popover>
 
-        <ProfilePopover authService={authService}/>
+        <ProfilePopover authService={authService} />
       </div>
     </div>
   );
