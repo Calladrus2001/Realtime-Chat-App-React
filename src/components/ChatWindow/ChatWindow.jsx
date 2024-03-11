@@ -1,14 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
+import authService from "@/services/authService";
+import chatService from "@/services/chatService";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import ChatBubble from "./ChatBubble";
-import { IoSend, IoHappyOutline, IoImageOutline } from "react-icons/io5";
+import ImageUpload from "./ImageUpload";
+import { IoSend, IoHappyOutline } from "react-icons/io5";
 import { toast } from "sonner";
 
-function ChatWindow({ currentChannel, authService, chatService }) {
+function ChatWindow({ currentChannel }) {
   const [messages, setMessages] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const msgRef = useRef(null);
+  const dialogRef = useRef(null);
 
   useEffect(() => {
     const getMessages = async ({ channelId }) => {
@@ -47,7 +51,7 @@ function ChatWindow({ currentChannel, authService, chatService }) {
             <p>{currentChannel.slug}</p>
           </div>
           <ScrollArea>
-            <ul className="w-full p-2 text-white">
+            <ul className="w-full p-2 text-white mb-16">
               {messages.map((message, index) => {
                 const previousMessage = index > 0 ? messages[index - 1] : null;
                 return (
@@ -56,6 +60,7 @@ function ChatWindow({ currentChannel, authService, chatService }) {
                       user={currentUser.user}
                       message={message}
                       previousMessage={previousMessage}
+                      imgUrl={message.imgurl}
                     />
                   </li>
                 );
@@ -63,19 +68,19 @@ function ChatWindow({ currentChannel, authService, chatService }) {
             </ul>
           </ScrollArea>
 
-          <div className="w-full px-4 py-3 absolute flex items-center bottom-0 bg-gray-800 text-white">
-            <Button variant="ghost">
-              <IoHappyOutline className="text-lg" />
-            </Button>
-            <Button variant="ghost">
-              <IoImageOutline className="text-lg" />
-            </Button>
+          <div className="w-full px-4 py-3 absolute flex items-center gap-6 bottom-0 bg-gray-800 text-white">
+            <IoHappyOutline className="text-xl" />
+            <ImageUpload
+              channelId={currentChannel.id}
+              setMessages={setMessages}
+              ref={dialogRef}
+            />
             <ScrollArea className="w-full">
               <textarea
                 ref={msgRef}
                 type="text"
                 placeholder="Type Something..."
-                className="w-full h-auto ml-4 border-none bg-gray-800 outline-none focus:outline-none resize-none overflow-y-auto"
+                className="w-full h-auto border-none bg-gray-800 outline-none focus:outline-none resize-none overflow-y-auto"
                 maxLength={255}
                 rows="1"
               />
@@ -83,20 +88,8 @@ function ChatWindow({ currentChannel, authService, chatService }) {
 
             <Button
               variant="ghost"
-              onClick={async () => {
-                if (msgRef.current.value) {
-                  try {
-                    await chatService.createMessage({
-                      message: msgRef.current.value,
-                      userId: currentUser.user.id,
-                      channelId: currentChannel.id,
-                    });
-                    msgRef.current.value = "";
-                  } catch (error) {
-                    console.log(error);
-                    toast.error(error.message);
-                  }
-                }
+              onClick={() => {
+                handleNewMessage();
               }}
             >
               <IoSend />
@@ -106,6 +99,22 @@ function ChatWindow({ currentChannel, authService, chatService }) {
       )}
     </div>
   );
+
+  async function handleNewMessage() {
+    if (msgRef.current.value) {
+      try {
+        await chatService.createMessage({
+          message: msgRef.current.value,
+          userId: currentUser.user.id,
+          channelId: currentChannel.id,
+        });
+        msgRef.current.value = "";
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
+  }
 }
 
 export default ChatWindow;

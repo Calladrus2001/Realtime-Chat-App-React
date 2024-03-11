@@ -1,12 +1,14 @@
 // import { supabaseAnonKey } from "../lib/config";
 import client from "./_init";
 import localStorageService from "./localStorageService";
+import { v4 as uuidv4 } from "uuid";
 
 class ChatService {
   constructor() {
-    this.client = client
+    this.client = client;
   }
 
+  //? Methods dealing with channels
   async fetchChannels(userId) {
     const cacheData = localStorageService.fetchData({
       key: "channels",
@@ -21,7 +23,7 @@ class ChatService {
 
     if (error) throw new Error(error);
 
-    localStorageService.setData({ key: "channels", data});
+    localStorageService.setData({ key: "channels", data });
     return data;
   }
 
@@ -54,6 +56,7 @@ class ChatService {
     if (error) throw new Error(error);
   }
 
+  //? Methods dealing with messages
   subscribeToChannel({ channelId, setMessages }) {
     this.client
       .channel(channelId)
@@ -67,6 +70,7 @@ class ChatService {
         },
         (payload) => {
           const newMessage = payload.new;
+          console.log(newMessage);
           setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       )
@@ -77,10 +81,12 @@ class ChatService {
     this.client.removeAllChannels();
   }
 
-  async createMessage({ message, userId, channelId }) {
+  async createMessage({ message, userId, channelId, imgUrl }) {
     const { data, error } = await this.client
       .from("messages")
-      .insert([{ message: message, user_id: userId, channel_id: channelId }])
+      .insert([
+        { message: message, user_id: userId, channel_id: channelId, imgurl: imgUrl },
+      ])
       .select();
 
     if (error) throw new Error(error);
@@ -95,6 +101,29 @@ class ChatService {
       .order("inserted_at", { ascending: true });
 
     if (error) throw new Error(error);
+    return data;
+  }
+
+  //? Methods dealing with Media
+  async uploadMedia({ file, channelId }) {
+    const name = uuidv4();
+    const { data, error } = await this.client.storage
+      .from("media")
+      .upload(`${channelId}/${name}`, file, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+
+    if (error) throw new Error(error);
+    return data;
+  }
+
+  fetchDownloadUrl({ imgUrl }) {
+    const { data } = this.client.storage
+      .from("media")
+      .getPublicUrl(imgUrl);
+    
+    console.log(imgUrl, data)
     return data;
   }
 }
