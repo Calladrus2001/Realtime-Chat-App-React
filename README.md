@@ -54,8 +54,18 @@ should be obvious that the result is __NOT IDEMPOTENT__
 ### Some Key Design decisions:
 - `Contacts` table has an attribute `contact_id` which is the uuid of the user who is being added as a contact. Initially, it will be NULL since we cannot verify if user exists as we cannot access `auth.users` schema from client-SDK. However while fetching contacts for __channel creation__ we will only display those whose `contact_id` is not NULL. Whenever a new user is created, we update the contacts table to find users who have the former's info listed and update the `contact_id` from NULL to the actual value. This is not an __IDEAL__ situation. The correct approach would be to verify the same server-side, but that is for future development. Another way can be to make a separate `public.users` table but that negates all benefits of Supabase managing the Auth by itself so we won't do that. To handle the case where the contact already exists, we can update `contact_id` when that user logs in.
 
+- Previously, for new messages, we would send a write request to the DB. Simultaneouly, we were also listening for changes to the DB. Whenever a new message arrived, we would render it. This meant that even for own messages we would wait for changes to the DB. This was not noticeable when it was just messages but __EXTREMELY__ noticable when media was involved as well as:
+  - We would upload media 
+  - We would send message write request
+  - We would listen for this new change
+  - We would re-download the image we already had locally to display it.
+This was not an effective use of time and bandwidth so we switched to optimistic rendering of new messages. However, we need to account for disruptions and failures which would be addressed in future updates.
+
+- Ignore the use of `we` instead of `i` in this documentation, even though its a one-man project, I am used to writing `we` as i usually work together with other devs.
+
 ### Features:
 - Realtime Chat messaging (duh!)
 - Route protection
 - Media Sharing
+- Optimistic Rendering
 - Message Reply, Forwarding, etc

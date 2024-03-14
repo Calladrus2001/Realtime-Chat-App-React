@@ -1,4 +1,5 @@
 import { useState, useRef, forwardRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import authService from "@/services/authService";
 import chatService from "@/services/chatService";
@@ -17,16 +18,16 @@ const ImageUpload = forwardRef(function ImageUpload({ channelId, setMessages }, 
     ref.current.close();
   };
 
-  const handleNewMessage = async () => {
+  const handleNewMessage = async (file) => {
     try {
       const message = msgRef.current.value;
       const user = await authService.getCurrentUser();
-      const imageData = await chatService.uploadMedia({ file, channelId });
       await chatService.createMessage({
         message,
         userId: user.user.id,
         channelId,
-        imgUrl: imageData.path,
+        file,
+        setMessages
       });
     } catch (error) {
       toast.error(error.message);
@@ -53,7 +54,7 @@ const ImageUpload = forwardRef(function ImageUpload({ channelId, setMessages }, 
       <dialog ref={ref} className="shadow-lg relative">
         {file && (
           <>
-            <div className="flex flex-col items-center max-h-96">
+            <div className="flex flex-col items-center max-h-96 bg-gray-700">
               <img
                 src={URL.createObjectURL(file)}
                 alt="Selected image"
@@ -74,7 +75,7 @@ const ImageUpload = forwardRef(function ImageUpload({ channelId, setMessages }, 
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    handleNewMessage();
+                    handleNewMessage(file);
                     handleDialogClose();
                   }}
                 >
@@ -82,9 +83,9 @@ const ImageUpload = forwardRef(function ImageUpload({ channelId, setMessages }, 
                 </Button>
               </div>
             </div>
-            <div className="p-1 bg-gray-700 absolute top-1 right-1 rounded-full">
+            <div className="absolute top-2 right-2 rounded-full">
               <IoCloseCircle
-                className="text-xl text-white cursor-pointer"
+                className="text-2xl text-white cursor-pointer"
                 onClick={handleDialogClose}
               />
             </div>

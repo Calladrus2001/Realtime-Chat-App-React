@@ -1,10 +1,9 @@
 import React from "react";
 import chatService from "@/services/chatService";
 
-function ChatBubble({ user, message, previousMessage, imgUrl }) {
+function ChatBubble({ user, message, previousMessage, imgUrl, localUrl, inserted_at }) {
   const isCurrentUser = message.user_id === user.id;
-
-  const currDate = new Date(message.inserted_at);
+  const currDate = inserted_at ?? new Date(message.inserted_at);
   const prevDate = new Date(previousMessage?.inserted_at);
   const hour = currDate.getHours().toString().padStart(2, "0");
   const minute = currDate.getMinutes().toString().padStart(2, "0");
@@ -23,7 +22,14 @@ function ChatBubble({ user, message, previousMessage, imgUrl }) {
             isCurrentUser ? "bg-lime-600 text-end" : "bg-gray-700 text-start"
           }`}
         >
-          {imgUrl && <img src={chatService.fetchDownloadUrl({imgUrl}).publicUrl} alt="image" className="rounded-sm pt-2" />}
+          {localUrl && <img src={localUrl} alt="image" className="rounded-sm my-1" />}
+          {imgUrl && (
+            <img
+              src={chatService.fetchDownloadUrl({ imgUrl }).publicUrl}
+              alt="image"
+              className="rounded-sm my-1"
+            />
+          )}
           {message.message && <p className="text-white">{message.message}</p>}
           <p className="text-2xs text-gray-300">{`${hour}:${minute}`}</p>
         </div>

@@ -21,7 +21,11 @@ function ChatWindow({ currentChannel }) {
     };
 
     if (currentChannel) {
-      chatService.subscribeToChannel({ channelId: currentChannel.id, setMessages });
+      chatService.subscribeToChannel({
+        channelId: currentChannel.id,
+        setMessages,
+        user: currentUser.user,
+      });
       getMessages({ channelId: currentChannel.id });
     }
   }, [currentChannel]);
@@ -61,6 +65,7 @@ function ChatWindow({ currentChannel }) {
                       message={message}
                       previousMessage={previousMessage}
                       imgUrl={message.imgurl}
+                      localUrl={message.localUrl}
                     />
                   </li>
                 );
@@ -107,6 +112,7 @@ function ChatWindow({ currentChannel }) {
           message: msgRef.current.value,
           userId: currentUser.user.id,
           channelId: currentChannel.id,
+          setMessages
         });
         msgRef.current.value = "";
       } catch (error) {

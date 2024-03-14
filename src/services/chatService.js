@@ -57,7 +57,7 @@ class ChatService {
   }
 
   //? Methods dealing with messages
-  subscribeToChannel({ channelId, setMessages }) {
+  subscribeToChannel({ channelId, setMessages, user }) {
     this.client
       .channel(channelId)
       .on(
@@ -70,8 +70,9 @@ class ChatService {
         },
         (payload) => {
           const newMessage = payload.new;
-          console.log(newMessage);
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          // Refer to key design decisions pt2 to understand the purpose of next line
+          if (newMessage.user_id !== user.id)
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       )
       .subscribe();
@@ -81,12 +82,21 @@ class ChatService {
     this.client.removeAllChannels();
   }
 
-  async createMessage({ message, userId, channelId, imgUrl }) {
+  async createMessage({ message, userId, channelId, file, setMessages }) {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        id: uuidv4(),
+        message,
+        localUrl: file ? URL.createObjectURL(file) : null,
+        inserted_at: Date.now(),
+        user_id: userId,
+      },
+    ]);
+    const imageData = file ? await chatService._uploadMedia({ file, channelId }) : null;
     const { data, error } = await this.client
       .from("messages")
-      .insert([
-        { message: message, user_id: userId, channel_id: channelId, imgurl: imgUrl },
-      ])
+      .insert([{ message, user_id: userId, channel_id: channelId, imgurl: imageData?.path }])
       .select();
 
     if (error) throw new Error(error);
@@ -105,7 +115,7 @@ class ChatService {
   }
 
   //? Methods dealing with Media
-  async uploadMedia({ file, channelId }) {
+  async _uploadMedia({ file, channelId }) {
     const name = uuidv4();
     const { data, error } = await this.client.storage
       .from("media")
@@ -119,11 +129,8 @@ class ChatService {
   }
 
   fetchDownloadUrl({ imgUrl }) {
-    const { data } = this.client.storage
-      .from("media")
-      .getPublicUrl(imgUrl);
-    
-    console.log(imgUrl, data)
+    const { data } = this.client.storage.from("media").getPublicUrl(imgUrl);
+
     return data;
   }
 }
