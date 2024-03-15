@@ -83,20 +83,32 @@ class ChatService {
   }
 
   async createMessage({ message, userId, channelId, file, setMessages }) {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: uuidv4(),
-        message,
-        localUrl: file ? URL.createObjectURL(file) : null,
-        inserted_at: Date.now(),
-        user_id: userId,
-      },
-    ]);
+    const id = uuidv4();
+    const newMessage = {
+      id,
+      message,
+      localUrl: file ? URL.createObjectURL(file) : null, //? This property is used for optimistic rendering and will not be recieved in DB
+      inserted_at: Date.now(),
+      user_id: userId,
+      loading: true,
+    };
+
+    //? This setMessages is for optimistic rendering of new messages
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+
     const imageData = file ? await chatService._uploadMedia({ file, channelId }) : null;
+
+    //? Once image, if provided, is uploaded the loading indicator would be turned off
+    setMessages((prevMessages) =>
+      prevMessages.map((msg) =>
+        msg.id === id ? { ...msg, loading: false, imageUrl: imageData.url } : msg
+      )
+    );
     const { data, error } = await this.client
       .from("messages")
-      .insert([{ message, user_id: userId, channel_id: channelId, imgurl: imageData?.path }])
+      .insert([
+        { message, user_id: userId, channel_id: channelId, imgurl: imageData?.path },
+      ])
       .select();
 
     if (error) throw new Error(error);
@@ -128,7 +140,7 @@ class ChatService {
     return data;
   }
 
-  fetchDownloadUrl({ imgUrl }) {
+  fetchDownloadUrl(imgUrl) {
     const { data } = this.client.storage.from("media").getPublicUrl(imgUrl);
 
     return data;

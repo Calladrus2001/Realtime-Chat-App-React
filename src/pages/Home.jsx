@@ -4,7 +4,6 @@ import { redirect, useLoaderData } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { getInit } from "../utils/getInitialsFromName";
-import authService from "@/services/authService";
 import chatService from "@/services/chatService";
 import Sidebar from "../components/Sidebar/Sidebar";
 import ChatsHeader from "../components/ChatsHeader";

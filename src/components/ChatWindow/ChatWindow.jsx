@@ -64,8 +64,6 @@ function ChatWindow({ currentChannel }) {
                       user={currentUser.user}
                       message={message}
                       previousMessage={previousMessage}
-                      imgUrl={message.imgurl}
-                      localUrl={message.localUrl}
                     />
                   </li>
                 );
