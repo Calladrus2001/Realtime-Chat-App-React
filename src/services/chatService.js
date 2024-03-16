@@ -3,6 +3,8 @@ import client from "./_init";
 import localStorageService from "./localStorageService";
 import { v4 as uuidv4 } from "uuid";
 
+//? This is the ChatService class which deals with all operations regarding RTC.
+
 class ChatService {
   constructor() {
     this.client = client;
@@ -70,7 +72,7 @@ class ChatService {
         },
         (payload) => {
           const newMessage = payload.new;
-          // Refer to key design decisions pt2 to understand the purpose of next line
+          //? Refer to key design decisions pt2 to understand the purpose of next line
           if (newMessage.user_id !== user.id)
             setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
@@ -87,7 +89,7 @@ class ChatService {
     const newMessage = {
       id,
       message,
-      localUrl: file ? URL.createObjectURL(file) : null, //? This property is used for optimistic rendering and will not be recieved in DB
+      localUrl: file ? URL.createObjectURL(file) : null,
       inserted_at: Date.now(),
       user_id: userId,
       loading: true,

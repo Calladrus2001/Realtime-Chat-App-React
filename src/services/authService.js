@@ -2,6 +2,8 @@
 import client from "./_init";
 import localStorageService from "./localStorageService";
 
+//? This is the AuthService class that deals with user authentication
+
 class AuthService {
   constructor() {
     this.client = client
@@ -16,10 +18,11 @@ class AuthService {
     if (signUpError) throw new Error(signUpError.message);
 
     const { _, updateError } = await this.client.auth.updateUser({
-      data: { display_name: name }
+      data: { display_name: name },
     });
 
     if (updateError) throw new Error(updateError.message);
+    //? refer to key design decisions pt1 to understand the use of next line
     this._updateContacts({ email, userId: data.user.id });
 
     return data;
@@ -32,6 +35,7 @@ class AuthService {
     });
 
     if (error) throw new Error(error.message);
+    //? refer to key design decisions pt1 to understand the use of next line
     this._updateContacts({ email, userId: data.user.id });
     return data;
   }

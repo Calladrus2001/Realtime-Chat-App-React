@@ -1,6 +1,9 @@
 import client from "./_init";
 import localStorageService from "./localStorageService";
 
+//? This is the contactService class which deals with adding and fetching contacts.
+//? As mentioned in the documentation, only those contacts which are registered will be allowed to be included in a group
+
 class ContactService {
   constructor() {
     this.client = client

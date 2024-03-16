@@ -1,4 +1,5 @@
 class LocalStorageService {
+  //? This class is a wrapper around the Browser's LocalStorage API
   //? The goal here is to store information to minimise DB reads
   //? If the data is yet to expire then it would be returned
   //? Else NULL would be returned which prompts a DB call.
