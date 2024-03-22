@@ -1,5 +1,4 @@
 import { useState, useRef, forwardRef } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 import authService from "@/services/authService";
 import chatService from "@/services/chatService";

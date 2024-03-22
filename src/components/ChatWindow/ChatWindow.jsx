@@ -8,7 +8,7 @@ import ImageUpload from "./ImageUpload";
 import { IoSend, IoHappyOutline } from "react-icons/io5";
 import { toast } from "sonner";
 
-function ChatWindow({ currentChannel }) {
+function ChatWindow({ currentChannel, channels }) {
   const [messages, setMessages] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const msgRef = useRef(null);
@@ -64,6 +64,8 @@ function ChatWindow({ currentChannel }) {
                       user={currentUser.user}
                       message={message}
                       previousMessage={previousMessage}
+                      channels={channels}
+                      ref={dialogRef}
                     />
                   </li>
                 );

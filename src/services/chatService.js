@@ -16,7 +16,7 @@ class ChatService {
       key: "channels",
       expiresIn: 7 * 24 * 60 * 60 * 1000,
     });
-    if (cacheData) return cacheData;
+    if (cacheData) return cacheData.map((item) => item.channels);
 
     const { data, error } = await this.client
       .from("participants")
@@ -26,7 +26,7 @@ class ChatService {
     if (error) throw new Error(error);
 
     localStorageService.setData({ key: "channels", data });
-    return data;
+    return data.map(item => item.channels);
   }
 
   async createChannel({ slug, createdBy, type, participants }) {

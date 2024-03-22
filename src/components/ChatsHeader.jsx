@@ -142,8 +142,10 @@ function ChatsHeader() {
               </DialogHeader>
               <Input name="Group Name" placeholder="Group Name" ref={groupNameRef} />
               <CheckboxList
-                contacts={contacts}
-                setselectedContacts={setselectedContacts}
+                items={contacts}
+                setItems={setselectedContacts}
+                filterAttribute="contact_id"
+                displayAttribute="contact_email"
               />
               <DialogFooter>
                 <DialogClose>

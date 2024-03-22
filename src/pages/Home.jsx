@@ -22,26 +22,26 @@ function Home() {
           <ChatsHeader />
           <ul>
             {channels.map((channel) => (
-              <li key={channel.channels.id} className="mb-2">
+              <li key={channel.id} className="mb-2">
                 <div
                   className={`w-full p-2 flex items-center gap-4 hover:bg-gray-700 cursor-pointer rounded-md ${
                     currentChannel &&
-                    currentChannel.id == channel.channels.id &&
+                    currentChannel.id == channel.id &&
                     "bg-gray-700"
                   }`}
-                  onClick={() => setCurrentChannel(channel.channels)}
+                  onClick={() => setCurrentChannel(channel)}
                 >
                   <Avatar>
-                    <AvatarFallback>{getInit(channel.channels.slug)}</AvatarFallback>
+                    <AvatarFallback>{getInit(channel.slug)}</AvatarFallback>
                   </Avatar>
-                  <strong className="text-white">{channel.channels.slug}</strong>
+                  <strong className="text-white">{channel.slug}</strong>
                 </div>
               </li>
             ))}
           </ul>
         </div>
         <div className="h-full w-3/4 bg-gray-800 relative">
-          <ChatWindow currentChannel={currentChannel} />
+          <ChatWindow currentChannel={currentChannel} channels={channels} />
         </div>
       </div>
     </>
