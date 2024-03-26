@@ -2,7 +2,7 @@
 
 ### Installation guide
 1. Clone this repo.
-2. Create a new Supabase project and add `project url` and `anon key` to the `.env` file as mentioned.
+2. Create a new Supabase project and add `anon key` to the `.env` file as mentioned.
 3. To create the necessary tables other than `auth.users` (which is already created at the time of supabase init), run the following SQL query in the Supabase SQL Editor:
 ```
 create type public.channel_type as enum ('one-on-one', 'group');
