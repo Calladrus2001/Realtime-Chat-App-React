@@ -12,7 +12,8 @@ function ChatWindow({ currentChannel, channels }) {
   const [messages, setMessages] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const msgRef = useRef(null);
-  const dialogRef = useRef(null);
+  const uploadImgRef = useRef(null);
+  const msgActionsRef = useRef(null);
 
   useEffect(() => {
     const getMessages = async ({ channelId }) => {
@@ -65,7 +66,7 @@ function ChatWindow({ currentChannel, channels }) {
                       message={message}
                       previousMessage={previousMessage}
                       channels={channels}
-                      ref={dialogRef}
+                      ref={msgActionsRef}
                     />
                   </li>
                 );
@@ -78,7 +79,7 @@ function ChatWindow({ currentChannel, channels }) {
             <ImageUpload
               channelId={currentChannel.id}
               setMessages={setMessages}
-              ref={dialogRef}
+              ref={uploadImgRef}
             />
             <ScrollArea className="w-full">
               <textarea
